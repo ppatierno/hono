@@ -5,7 +5,6 @@ set -e
 export PING_SLEEP=30s
 export WORKDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export BUILD_OUTPUT=$WORKDIR/build.out
-export DOCKER_HOST=tcp://localhost:2376
 
 touch $BUILD_OUTPUT
 
@@ -34,7 +33,7 @@ then
   cd $TRAVIS_BUILD_DIR
 fi
 
-mvn install -DcreateJavadoc=true -Pbuild-docker-image,run-tests >> $BUILD_OUTPUT 2>&1
+mvn install -DcreateJavadoc=true -Ddocker.host=unix:///var/run/docker.sock -Pbuild-docker-image,run-tests >> $BUILD_OUTPUT 2>&1
 
 # The build finished without returning an error so dump a tail of the output
 dump_output
