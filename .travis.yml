@@ -11,6 +11,7 @@ before_install:
   - unzip -qq apache-maven-3.3.9-bin.zip
   - export M2_HOME=$PWD/apache-maven-3.3.9
   - export PATH=$M2_HOME/bin:$PATH
+  - export DOCKER_HOST=tcp://localhost:2376
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
