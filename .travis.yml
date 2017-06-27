@@ -1,5 +1,5 @@
 dist: trusty
-group: deprecated-2017Q2
+#group: deprecated-2017Q2
 sudo: required
 language: java
 script: ./travis.sh
@@ -7,10 +7,10 @@ jdk:
   - openjdk8
 
 before_install:
-  - wget https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
-  - unzip -qq apache-maven-3.3.9-bin.zip
-  - export M2_HOME=$PWD/apache-maven-3.3.9
-  - export PATH=$M2_HOME/bin:$PATH
+#  - wget https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
+#  - unzip -qq apache-maven-3.3.9-bin.zip
+#  - export M2_HOME=$PWD/apache-maven-3.3.9
+#  - export PATH=$M2_HOME/bin:$PATH
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
