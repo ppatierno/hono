@@ -158,3 +158,11 @@ mosquitto_pub -h $(minishift ip) -p 31883 -u 'sensor1@DEFAULT_TENANT' -P hono-se
 
 The username and password used above for device `4711` are part of the example configuration that comes with Hono. See [Device Identity]({{< relref "concepts/device-identity.md" >}}) for an explanation of how devices are identified in Hono and how device identity is related to authentication.
 
+## Configuring Components
+
+Hono components may be configured by setting environment variables. The command line tool `oc` may be used in order to alter these environment
+variables after Hono has been deployed:
+
+~~~sh
+oc env -n hono dc/hono-service-device-registry HONO_REGISTRY_SVC_MAX_DEVICES_PER_TENANT=1000
+~~~
