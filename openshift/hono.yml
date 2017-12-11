@@ -57,6 +57,17 @@ objects:
       referencePolicy:
         type: Source
 
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: influxdb-pvc
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 20Gi
+
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -124,8 +135,9 @@ objects:
           - mountPath: /etc/config
             name: conf
         volumes:
-        - emptyDir: {}
-          name: influxdb-storage
+        - name: influxdb-storage
+          persistentVolumeClaim:
+            claimName: influxdb-pvc
         - name: conf
           configMap:
             name: influxdb-config
@@ -567,7 +579,7 @@ objects:
           securityContext:
             privileged: false
           volumeMounts:
-          - mountPath: /etc/config/
+          - mountPath: /etc/config
             name: conf
           - mountPath: /etc/secrets
             name: tls
@@ -1121,9 +1133,6 @@ objects:
         downstream:
           host: messaging
           port: 5672
-          #keyPath: /run/secrets/hono-messaging-key.pem
-          #certPath: /run/secrets/hono-messaging-cert.pem
-          #trustStorePath: /run/secrets/trusted-certs.pem
         messaging:
           keyPath: /etc/secrets/tls.key
           certPath: /etc/secrets/tls.crt

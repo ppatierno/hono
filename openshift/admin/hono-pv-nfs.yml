@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hono-registry-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 128Mi
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    path: /exports/hono/registry         # NFS export name
+    server: nfs-server.internal   # IP/hostname address of NFS server
+    readOnly: false
