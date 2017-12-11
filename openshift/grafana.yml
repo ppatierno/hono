@@ -109,20 +109,22 @@ objects:
   metadata:
     name: grafana
     labels:
-      app: grafana
+      app: hono-metrics
+      deploymentconfig: grafana
   spec:
     replicas: 1
     selector:
+      app: hono-metrics
       deploymentconfig: grafana
     strategy:
       activeDeadlineSeconds: 21600
       recreateParams:
         timeoutSeconds: 600
-      resources: {}
       type: Recreate
     template:
       metadata:
         labels:
+          app: hono-metrics
           deploymentconfig: grafana
       spec:
         containers:
@@ -143,7 +145,6 @@ objects:
           ports:
           - containerPort: 3000
             protocol: TCP
-          resources: {}
           readinessProbe:
             failureThreshold: 3
             httpGet:
@@ -172,7 +173,6 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
-        securityContext: {}
         terminationGracePeriodSeconds: 30
         volumes:
         - name: data
@@ -204,6 +204,7 @@ objects:
       protocol: TCP
       targetPort: 3000
     selector:
+      app: hono-metrics
       deploymentconfig: grafana
     sessionAffinity: None
     type: ClusterIP
