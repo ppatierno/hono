@@ -163,7 +163,7 @@ public final class FileBasedRegistrationService extends BaseRegistrationService<
                     JsonObject device = (JsonObject) deviceObj;
                     String deviceId = device.getString(FIELD_DEVICE_ID);
                     if (deviceId != null) {
-                        log.debug("loading device [{}]", deviceId);
+                        log.trace("loading device [{}]", deviceId);
                         JsonObject data = device.getJsonObject(FIELD_DATA, new JsonObject().put(FIELD_ENABLED, Boolean.TRUE));
                         deviceMap.put(deviceId, data);
                         count++;
