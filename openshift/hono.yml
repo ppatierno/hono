@@ -50,10 +50,10 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: influxdb:1.2.4-alpine
+        name: influxdb:1.4-alpine
       importPolicy:
         scheduled: true
-      name: "1.2.4-alpine"
+      name: "1.4"
       referencePolicy:
         type: Source
 
@@ -93,7 +93,7 @@ objects:
             - eclipsehono-influxdb
           from:
             kind: ImageStreamTag
-            name: influxdb:1.2.4-alpine
+            name: influxdb:1.4
     template:
       metadata:
         labels:
@@ -173,11 +173,15 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-adapter-mqtt-vertx
+    labels:
+      app: hono-adapter
 
 - kind: BuildConfig
   apiVersion: v1
   metadata:
     name: hono-adapter-mqtt-vertx-build
+    labels:
+      app: hono-adapter
   spec:
     triggers: 
       - type: ImageChange
@@ -209,6 +213,8 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-adapter-mqtt-vertx-config
+    labels:
+      app: hono-adapter
   data:
     application.yml: |+
       hono:
@@ -423,11 +429,15 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-adapter-rest-vertx
+    labels:
+      app: hono-adapter
 
 - kind: BuildConfig
   apiVersion: v1
   metadata:
     name: hono-adapter-rest-vertx-build
+    labels:
+      app: hono-adapter
   spec:
     triggers: 
       - type: ImageChange
@@ -459,6 +469,8 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-adapter-rest-vertx-config
+    labels:
+      app: hono-adapter
   data:
     application.yml: |+
       hono:
@@ -654,11 +666,15 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-service-device-registry
+    labels:
+      app: hono-service
 
 - kind: BuildConfig
   apiVersion: v1
   metadata:
     name: hono-service-device-registry-build
+    labels:
+      app: hono-service
   spec:
     triggers: 
       - type: ImageChange
@@ -690,6 +706,8 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-service-device-registry-config
+    labels:
+      app: hono-service
   data:
     application.yml: |+
       hono:
@@ -737,6 +755,8 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-registry-pvc
+    labels:
+      app: hono-service
   spec:
     accessModes:
     - ReadWriteOnce
@@ -749,12 +769,12 @@ objects:
   metadata:
     name: hono-service-device-registry
     labels:
-      app: hono-service-device-registry
+      app: hono-service
       deploymentconfig: hono-service-device-registry
   spec:
     replicas: 1
     selector:
-      app: hono-service-device-registry
+      app: hono-service
       deploymentconfig: hono-service-device-registry
     strategy:
       type: Recreate
@@ -773,7 +793,7 @@ objects:
     template:
       metadata:
         labels:
-          app: hono-service-device-registry
+          app: hono-service
           deploymentconfig: hono-service-device-registry
       spec:
         containers:
@@ -861,7 +881,7 @@ objects:
   metadata:
     name: hono-service-device-registry
     labels:
-      app: hono-service-device-registry
+      app: hono-service
       deploymentconfig: hono-service-device-registry
     annotations:
       service.alpha.openshift.io/serving-cert-secret-name: hono-service-device-registry-tls
@@ -880,14 +900,14 @@ objects:
       protocol: TCP
       targetPort: 8443
     selector:
-      app: hono-service-device-registry
+      app: hono-service
       deploymentconfig: hono-service-device-registry
 
 - kind: Route
   apiVersion: v1
   metadata:
     labels:
-      app: hono-service-device-registry
+      app: hono-service
     name: hono-service-device-registry-http
   spec:
     port:
@@ -900,7 +920,7 @@ objects:
   apiVersion: v1
   metadata:
     labels:
-      app: hono-service-device-registry
+      app: hono-service
     name: hono-service-device-registry-https
   spec:
     port:
@@ -917,11 +937,15 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-service-auth
+    labels:
+      app: hono-service
 
 - kind: BuildConfig
   apiVersion: v1
   metadata:
     name: hono-service-auth-build
+    labels:
+      app: hono-service
   spec:
     triggers: 
       - type: ImageChange
@@ -953,6 +977,8 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-service-auth-config
+    labels:
+      app: hono-service
   data:
     application.yml: |+
       hono:
@@ -974,12 +1000,12 @@ objects:
   metadata:
     name: hono-service-auth
     labels:
-      app: hono-service-auth
+      app: hono-service
       deploymentconfig: hono-service-auth
   spec:
     replicas: 1
     selector:
-      app: hono-service-auth
+      app: hono-service
       deploymentconfig: hono-service-auth
     strategy:
       type: Rolling
@@ -998,7 +1024,7 @@ objects:
     template:
       metadata:
         labels:
-          app: hono-service-auth
+          app: hono-service
           deploymentconfig: hono-service-auth
       spec:
         containers:
@@ -1064,7 +1090,7 @@ objects:
   metadata:
     name: hono-service-auth
     labels:
-      app: hono-service-auth
+      app: hono-service
       deploymentconfig: hono-service-auth
     annotations:
       service.alpha.openshift.io/serving-cert-secret-name: hono-service-auth-tls
@@ -1075,7 +1101,7 @@ objects:
       protocol: TCP
       targetPort: 5671
     selector:
-      app: hono-service-auth
+      app: hono-service
       deploymentconfig: hono-service-auth
 
 # hono-service-messaging
@@ -1084,11 +1110,15 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-service-messaging
+    labels:
+      app: hono-service
 
 - kind: BuildConfig
   apiVersion: v1
   metadata:
     name: hono-service-messaging-build
+    labels:
+      app: hono-service
   spec:
     triggers: 
       - type: ImageChange
@@ -1120,6 +1150,8 @@ objects:
   apiVersion: v1
   metadata:
     name: hono-service-messaging-config
+    labels:
+      app: hono-service
   data:
     application.yml: |+
       hono:
@@ -1155,12 +1187,12 @@ objects:
   metadata:
     name: hono-service-messaging
     labels:
-      app: hono-service-messaging
+      app: hono-service
       deploymentconfig: hono-service-messaging
   spec:
     replicas: 1
     selector:
-      app: hono-service-messaging
+      app: hono-service
       deploymentconfig: hono-service-messaging
     strategy:
       type: Rolling
@@ -1179,7 +1211,7 @@ objects:
     template:
       metadata:
         labels:
-          app: hono-service-messaging
+          app: hono-service
           deploymentconfig: hono-service-messaging
       spec:
         containers:
@@ -1249,7 +1281,7 @@ objects:
   metadata:
     name: hono-service-messaging
     labels:
-      app: hono-service-messaging
+      app: hono-service
       deploymentconfig: hono-service-messaging
     annotations:
       service.alpha.openshift.io/serving-cert-secret-name: hono-service-messaging-tls
@@ -1260,5 +1292,5 @@ objects:
       protocol: TCP
       targetPort: 5671
     selector:
-      app: hono-service-messaging
+      app: hono-service
       deploymentconfig: hono-service-messaging
