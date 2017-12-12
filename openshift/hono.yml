@@ -81,9 +81,9 @@ objects:
       app: hono-metrics
       deploymentconfig: influxdb
     strategy:
-      rollingParams:
+      type: Recreate
+      recreateParams:
         timeoutSeconds: 3600
-      type: Rolling
     triggers:
       - type: ConfigChange
       - type: ImageChange
