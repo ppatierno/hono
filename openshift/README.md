@@ -42,7 +42,7 @@ oc create -f admin grafana-pv-nfs.yml
 
 Also see:
 
-* [OpenShift: Persistent Storage](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html)
+* [OpenShift: Persistent Storage](https://docs.openshift.org/latest/architecture/additional_concepts/storage.html)
 
 ## Deploy Hono template
 
@@ -54,8 +54,21 @@ This can be done from the command line like this:
 oc process -f hono.yml | oc create -f -
 ~~~
 
+You can set template parameters like that:
+
+~~~sh
+oc process -f hono.yml \
+   -p "GIT_REPOSITORY=https://github.com/ctron/hono" 
+   -p "GIT_BRANCH=feature/enable_s2i"| oc create -f -
+~~~
+
+**Note:** Currently you will need to set the following parameters:
+
+* `GIT_REPOSITORY=https://github.com/ctron/hono`
+* `GIT_BRANCH=feature/enable_s2i`
+
 See also:
-* [OpenShift: Templates](https://docs.openshift.com/container-platform/latest/dev_guide/templates.html) 
+* [OpenShift: Templates](https://docs.openshift.org/latest/dev_guide/templates.html) 
 
 ## Deploy Grafana template
 
