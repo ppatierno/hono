@@ -20,8 +20,99 @@ parameters:
   required:        true
   generate:        expression
   from:            '[a-zA-Z0-9]{64}'
+- name:         JOLOKIA_PASSWORD
+  required:        true
+  generate:        expression
+  from:            '[a-zA-Z0-9]{32}'
 
 objects:
+
+# Hawkular OpenShift Agent
+
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: hawkular-shared-secrets
+  stringData:
+    jolokia.password: ${JOLOKIA_PASSWORD}
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-java
+    labels:
+      name: hawkular-openshift-agent-java
+      hawkular-openshift-agent: jolokia-java
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        tls:
+          skip_certificate_validation: true
+        credentials:
+          username: jolokia
+          password: "secret:hawkular-shared-secrets/jolokia.password"
+        metrics:
+        - id: java.heapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            component: jvm
+            system: heap
+            metricType: heapUsed
+          type: gauge
+          description: Heap Memory Used
+          units: B
+        - id: java.heapComitted
+          name: "java.lang:type=Memory#HeapMemoryUsage#comitted"
+          tags:
+            component: jvm
+            system: heap
+            metricType: comitted
+          type: gauge
+          description: Heap Memory Comitted
+          units: B
+        - id: java.gc.markSweep.count
+          name: "java.lang:name=PS MarkSweep,type=GarbageCollector#CollectionCount"
+          tags:
+            component: jvm
+            system: gc
+            systemType: markSweep
+            metricType: collectionCount
+          type: counter
+          description: PS MarkSweep Collection Count
+        - id: java.gc.markSweep.time
+          name: "java.lang:name=PS MarkSweep,type=GarbageCollector#CollectionTime"
+          tags:
+            component: jvm
+            system: gc
+            systemType: markSweep
+            metricType: collectionTime
+          type: counter
+          description: PS MarkSweep Collection Time
+          units: ms
+        - id: java.gc.scavenge.count
+          name: "java.lang:name=PS Scavenge,type=GarbageCollector#CollectionCount"
+          tags:
+            component: jvm
+            system: gc
+            systemType: scavenge
+            metricType: collectionCount
+          type: counter
+          description: PS Scavenge Collection Count
+        - id: java.gc.scavenge.time
+          name: "java.lang:name=PS Scavenge,type=GarbageCollector#CollectionTime"
+          tags:
+            component: jvm
+            system: gc
+            systemType: scavenge
+            metricType: collectionTime
+          type: counter
+          description: PS Scavenge Collection Time
+          units: ms
 
 # Import image streams
 
@@ -269,6 +360,7 @@ objects:
     labels:
       app: hono-adapter
       deploymentconfig: hono-adapter-mqtt-vertx
+      hawkular-openshift-agent: jolokia-java
   spec:
     replicas: 1
     selector:
@@ -315,6 +407,15 @@ objects:
             value: hono-service-device-registry.$(KUBERNETES_NAMESPACE).svc
           - name: HONO_CREDENTIALS_HOST
             value: hono-service-device-registry.$(KUBERNETES_NAMESPACE).svc
+          - name: AB_JOLOKIA_USER
+            value: jolokia
+          - name: AB_JOLOKIA_PASSWORD_RANDOM
+            value: "false"
+          - name: AB_JOLOKIA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: hawkular-shared-secrets
+                key: jolokia.password
           readinessProbe:
             httpGet:
               path: /readiness
@@ -327,7 +428,12 @@ objects:
               port: 8088
               scheme: HTTP
             initialDelaySeconds: 180
+          resources:
+            limits:
+              memory: 512Mi
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 8088
             name: radan-http
             protocol: TCP
@@ -352,6 +458,9 @@ objects:
         - name: tls
           secret:
             secretName: hono-adapter-mqtt-vertx-tls
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-java
 
 - apiVersion: v1
   kind: Service
@@ -525,6 +634,7 @@ objects:
     labels:
       app: hono-adapter
       deploymentconfig: hono-adapter-rest-vertx
+      hawkular-openshift-agent: jolokia-java
   spec:
     replicas: 1
     selector:
@@ -571,6 +681,15 @@ objects:
             value: hono-service-device-registry.$(KUBERNETES_NAMESPACE).svc
           - name: HONO_CREDENTIALS_HOST
             value: hono-service-device-registry.$(KUBERNETES_NAMESPACE).svc
+          - name: AB_JOLOKIA_USER
+            value: jolokia
+          - name: AB_JOLOKIA_PASSWORD_RANDOM
+            value: "false"
+          - name: AB_JOLOKIA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: hawkular-shared-secrets
+                key: jolokia.password
           readinessProbe:
             httpGet:
               path: /readiness
@@ -583,7 +702,12 @@ objects:
               port: 8088
               scheme: HTTP
             initialDelaySeconds: 180
+          resources:
+            limits:
+              memory: 512Mi
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 8088
             name: radan-http
             protocol: TCP
@@ -608,6 +732,9 @@ objects:
         - name: tls
           secret:
             secretName: hono-adapter-rest-vertx-tls
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-java
 
 - apiVersion: v1
   kind: Service
@@ -771,6 +898,7 @@ objects:
     labels:
       app: hono-service
       deploymentconfig: hono-service-device-registry
+      hawkular-openshift-agent: jolokia-java
   spec:
     replicas: 1
     selector:
@@ -827,6 +955,15 @@ objects:
               secretKeyRef:
                 name: hono-shared-signing-secret
                 key: sharedSecret
+          - name: AB_JOLOKIA_USER
+            value: jolokia
+          - name: AB_JOLOKIA_PASSWORD_RANDOM
+            value: "false"
+          - name: AB_JOLOKIA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: hawkular-shared-secrets
+                key: jolokia.password
           readinessProbe:
             httpGet:
               path: /readiness
@@ -840,6 +977,8 @@ objects:
               scheme: HTTP
             initialDelaySeconds: 180
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 8088
             name: radan-http
             protocol: TCP
@@ -855,6 +994,9 @@ objects:
           - containerPort: 5672
             name: amqp
             protocol: TCP
+          resources:
+            limits:
+              memory: 512Mi
           securityContext:
             privileged: false
           volumeMounts:
@@ -875,6 +1017,9 @@ objects:
         - name: tls
           secret:
             secretName: hono-service-device-registry-tls
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-java
 
 - apiVersion: v1
   kind: Service
@@ -1002,6 +1147,7 @@ objects:
     labels:
       app: hono-service
       deploymentconfig: hono-service-auth
+      hawkular-openshift-agent: jolokia-java
   spec:
     replicas: 1
     selector:
@@ -1052,6 +1198,15 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: AB_JOLOKIA_USER
+            value: jolokia
+          - name: AB_JOLOKIA_PASSWORD_RANDOM
+            value: "false"
+          - name: AB_JOLOKIA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: hawkular-shared-secrets
+                key: jolokia.password
           livenessProbe:
             initialDelaySeconds: 25
             periodSeconds: 9
@@ -1064,7 +1219,12 @@ objects:
             tcpSocket:
               port: 5672
             timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 5671
             name: amqps
             protocol: TCP
@@ -1084,6 +1244,9 @@ objects:
         - name: tls
           secret:
             secretName: hono-service-auth-tls
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-java
 
 - apiVersion: v1
   kind: Service
@@ -1189,6 +1352,7 @@ objects:
     labels:
       app: hono-service
       deploymentconfig: hono-service-messaging
+      hawkular-openshift-agent: jolokia-java
   spec:
     replicas: 1
     selector:
@@ -1241,6 +1405,15 @@ objects:
                 fieldPath: metadata.namespace
           - name: HONO_AUTH_HOST
             value: hono-service-auth.$(KUBERNETES_NAMESPACE).svc
+          - name: AB_JOLOKIA_USER
+            value: jolokia
+          - name: AB_JOLOKIA_PASSWORD_RANDOM
+            value: "false"
+          - name: AB_JOLOKIA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: hawkular-shared-secrets
+                key: jolokia.password
           livenessProbe:
             httpGet:
               path: /liveness
@@ -1252,7 +1425,12 @@ objects:
               path: /readiness
               port: 8088
               scheme: HTTP
+          resources:
+            limits:
+              memory: 512Mi
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 8088
             name: radan-http
             protocol: TCP
@@ -1275,6 +1453,9 @@ objects:
         - name: tls
           secret:
             secretName: hono-service-messaging-tls
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-java
 
 - apiVersion: v1
   kind: Service
