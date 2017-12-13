@@ -34,8 +34,30 @@ parameters:
   required:        true
   generate:        expression
   from:            '[a-zA-Z0-9]{32}'
+- name:         ENMASSE_NAMESPACE
+  description:     The name of the project/namespace EnMasse is deployed to.
+                   Of EnMasse is deployed into the same 
+  required:        true
+  value:           hono
 
 objects:
+
+# Shared resources
+
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: hono-configuration
+  data:
+    downstream.host: messaging.${ENMASSE_NAMESPACE}.svc
+    downstream.port: "5672"
+
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: hono-shared-signing-secret
+  stringData:
+    sharedSecret: ${SIGNING_SHARED_SECRET}
 
 # Hawkular OpenShift Agent
 
@@ -903,13 +925,6 @@ objects:
             credentialsFilename: /var/lib/hono/device-registry/credentials.json
             saveToFile: true
 
-- kind: Secret
-  apiVersion: v1
-  metadata:
-    name: hono-shared-signing-secret
-  stringData:
-    sharedSecret: ${SIGNING_SHARED_SECRET}
-
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
@@ -1362,9 +1377,6 @@ objects:
           trustStorePath: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
           trustStoreFormat: PEM
           name: 'Hono Messaging'
-        downstream:
-          host: messaging
-          port: 5672
         messaging:
           keyPath: /etc/secrets/tls.key
           certPath: /etc/secrets/tls.crt
@@ -1435,6 +1447,16 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: HONO_DOWNSTREAM_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: hono-configuration
+                key: downstream.host
+          - name: HONO_DOWNSTREAM_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: hono-configuration
+                key: downstream.port
           - name: HONO_AUTH_HOST
             value: hono-service-auth.$(KUBERNETES_NAMESPACE).svc
           - name: AB_JOLOKIA_USER
