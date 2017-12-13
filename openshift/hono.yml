@@ -1,11 +1,15 @@
 apiVersion: v1
 kind: Template
+
 metadata:
+
   name: hono-template
+
   annotations:
-    description: "Eclipse Hono™"
+    description: "This is a quickstart template for using Eclipse Hono™ based on EnMasse"
     iconClass: "pficon-topology"
-    tags: "iot"
+    tags: "iot,quickstart"
+    openshift.io/display-name: "Eclipse Hono™ Quickstart"
 
 # Parameters
 
@@ -17,10 +21,16 @@ parameters:
   description:     Git branch
   value:           master
 - name:         SIGNING_SHARED_SECRET
+  description:     The shared secret for signing and validating
+                   JWT tokens. If this is left unspecified it will
+                   be generated when creating the template.
   required:        true
   generate:        expression
   from:            '[a-zA-Z0-9]{64}'
 - name:         JOLOKIA_PASSWORD
+  description:     The password used for authenticating the Hawkular
+                   agent with the Jolokia agent. It can be left unspecified
+                   in which case a password will be generated.
   required:        true
   generate:        expression
   from:            '[a-zA-Z0-9]{32}'
