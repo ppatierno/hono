@@ -4,8 +4,8 @@ This document requires a dedicated OpenShift 3.7 cluster setup.
 
 Things to do:
 
- - [ ] Separate EnMasse from Hono project/namespace
- - [ ] Separate Grafana from Hono project/namespace
+ - [X] Separate EnMasse from Hono project/namespace
+ - [X] Separate Grafana from Hono project/namespace
  - [ ] Enable Grafana "Guest"
  - [ ] Switch to Grafana 4.7
  - [ ] Enable datasource provisioning (requires Grafana 4.7)
@@ -13,12 +13,25 @@ Things to do:
 
 ## Deploy EnMasse
 
-Download: https://github.com/EnMasseProject/enmasse/releases/tag/0.13.2
+Login in to OpenShift and create a new EnMasse project:
+
+~~~sh
+oc login
+oc new-project enmasse --display-name='EnMasse Instance'
+~~~
+
+Download and unpack EnMasse:
 
 ~~~sh
 wget https://github.com/EnMasseProject/enmasse/releases/download/0.13.2/enmasse-0.13.2.tgz
 tar xzf enmasse-0.13.2.tgz
 cd enmasse-0.13.2
+~~~
+
+Deploy EnMasse:
+
+~~~sh
+./deploy-openshift.sh -n enmasse -m https://dchp153.coe:8443 -u developer
 ~~~
 
 ## Create PVs
@@ -44,9 +57,28 @@ Also see:
 
 * [OpenShift: Persistent Storage](https://docs.openshift.org/latest/architecture/additional_concepts/storage.html)
 
+## Create configuration in EnMasse
+
+~~~sh
+PROJECT=enmasse
+curl -X PUT -T "addresses.json" -H "content-type: application/json" http://$(oc -n "$PROJECT" get route restapi -o jsonpath='{.spec.host}')/v1/addresses/default
+~~~
+
 ## Deploy Hono template
 
-The Hono template is located at: [hono.yml](hono.yml). It needs to be processes and executed.
+Create a new project for Hono:
+
+~~~sh
+oc new-project hono --display-name='Eclipse Hono™'
+~~~
+
+Create the InfluxDB ConfigMap from a local file:
+
+~~~sh
+oc -n hono create configmap influxdb-config --from-file="../example/target/config/influxdb.conf"
+~~~
+
+The Hono template is located at: [hono.yml](hono.yml). It needs to be processed and executed.
 
 This can be done from the command line like this:
 
@@ -58,20 +90,38 @@ You can set template parameters like that:
 
 ~~~sh
 oc process -f hono.yml \
-   -p "GIT_REPOSITORY=https://github.com/ctron/hono" 
-   -p "GIT_BRANCH=feature/enable_s2i"| oc create -f -
+   -p "ENMASSE_NAMESPACE=enmasse" \
+   -p "GIT_REPOSITORY=https://github.com/ctron/hono" \
+   -p "GIT_BRANCH=feature/support_s2i"| oc create -f -
 ~~~
 
 **Note:** Currently you will need to set the following parameters:
 
+* `ENMASSE_NAMESPACE=enmasse`
 * `GIT_REPOSITORY=https://github.com/ctron/hono`
-* `GIT_BRANCH=feature/enable_s2i`
+* `GIT_BRANCH=feature/support_s2i`
 
 See also:
 * [OpenShift: Templates](https://docs.openshift.org/latest/dev_guide/templates.html) 
 
 ## Deploy Grafana template
 
+Create a new project for Grafana:
+
+~~~sh
+oc new-project grafana --display-name='Grafana Dashboard'
+~~~
+
 The Hono template is located at: [grafana.yml](grafana.yml). It needs to be processes and executed.
 Please see [Deploy Hono template](#deploy-hono-template) for more information about deploying a
-template. 
+template.
+
+~~~sh
+oc process -f grafana.yml | oc create -f -
+~~~
+
+If you want to stick to the default "admin" password use:
+
+~~~sh
+oc process -f grafana.yml -p ADMIN_PASSWORD=admin | oc create -f -
+~~~
