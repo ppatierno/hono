@@ -4,9 +4,12 @@ This document requires a dedicated OpenShift 3.7 cluster setup.
 
 Things to do:
 
- - [ ] Separate Hono from EnMasse
- - [ ] Separate Grafana from Hono
+ - [ ] Separate EnMasse from Hono project/namespace
+ - [ ] Separate Grafana from Hono project/namespace
  - [ ] Enable Grafana "Guest"
+ - [ ] Switch to Grafana 4.7
+ - [ ] Enable datasource provisioning (requires Grafana 4.7)
+ - [ ] Enable dashboard provisioning (requires Grafana 4.7)
 
 ## Deploy EnMasse
 
