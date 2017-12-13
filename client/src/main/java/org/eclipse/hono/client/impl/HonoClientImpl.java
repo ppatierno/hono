@@ -168,6 +168,7 @@ public final class HonoClientImpl implements HonoClient {
                     conAttempt -> {
                         connecting.compareAndSet(true, false);
                         if (conAttempt.failed()) {
+                            LOG.info("Failed to establish connection", conAttempt.cause());
                             reconnect(connectionHandler, disconnectHandler);
                         } else {
                             setConnection(conAttempt.result());
