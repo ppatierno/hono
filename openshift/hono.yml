@@ -61,8 +61,9 @@ objects:
           name: "java.lang:type=Memory#HeapMemoryUsage#used"
           tags:
             component: jvm
-            system: heap
-            metricType: heapUsed
+            system: memory
+            systemType: heap
+            metricType: used
           type: gauge
           description: Heap Memory Used
           units: B
@@ -70,10 +71,31 @@ objects:
           name: "java.lang:type=Memory#HeapMemoryUsage#comitted"
           tags:
             component: jvm
-            system: heap
+            system: memory
+            systemType: heap
             metricType: comitted
           type: gauge
           description: Heap Memory Comitted
+          units: B
+        - id: java.nonHeapUsed
+          name: "java.lang:type=Memory#NonHeapMemoryUsage#used"
+          tags:
+            component: jvm
+            system: memory
+            systemType: nonHeap
+            metricType: used
+          type: gauge
+          description: Non-Heap Memory Used
+          units: B
+        - id: java.nonHeapComitted
+          name: "java.lang:type=Memory#NonHeapMemoryUsage#comitted"
+          tags:
+            component: jvm
+            system: memory
+            systemType: nonHeap
+            metricType: comitted
+          type: gauge
+          description: Non-Heap Memory Comitted
           units: B
         - id: java.gc.markSweep.count
           name: "java.lang:name=PS MarkSweep,type=GarbageCollector#CollectionCount"
