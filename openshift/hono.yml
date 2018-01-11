@@ -586,19 +586,19 @@ objects:
       kind: Service
       name: hono-adapter-mqtt-vertx
 
-# hono-adapter-rest-vertx
+# hono-adapter-http-vertx
 
 - kind: ImageStream
   apiVersion: v1
   metadata:
-    name: hono-adapter-rest-vertx
+    name: hono-adapter-http-vertx
     labels:
       app: hono-adapter
 
 - kind: BuildConfig
   apiVersion: v1
   metadata:
-    name: hono-adapter-rest-vertx-build
+    name: hono-adapter-http-vertx-build
     labels:
       app: hono-adapter
   spec:
@@ -618,20 +618,20 @@ objects:
           name: fabric8-s2i-java:2.0
         env:
         - name: MAVEN_ARGS_APPEND
-          value: -B -pl org.eclipse.hono:hono-adapter-rest-vertx --also-make
+          value: -B -pl org.eclipse.hono:hono-adapter-http-vertx --also-make
         - name: ARTIFACT_DIR
-          value: adapters/rest-vertx/target
+          value: adapters/http-vertx/target
         - name: ARTIFACT_COPY_ARGS
           value: "*-exec.jar"
     output:
       to:
         kind: ImageStreamTag
-        name: hono-adapter-rest-vertx:latest
+        name: hono-adapter-http-vertx:latest
 
 - kind: ConfigMap
   apiVersion: v1
   metadata:
-    name: hono-adapter-rest-vertx-config
+    name: hono-adapter-http-vertx-config
     labels:
       app: hono-adapter
   data:
@@ -656,14 +656,14 @@ objects:
           trustStorePath: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
           trustStoreFormat: PEM
         registration:
-          name: 'Hono REST Adapter'
+          name: 'Hono HTTP Adapter'
           port: 5671
           username: rest-adapter@HONO
           password: rest-secret
           trustStorePath: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
           trustStoreFormat: PEM
         credentials:
-          name: 'Hono REST Adapter'
+          name: 'Hono HTTP Adapter'
           port: 5671
           username: rest-adapter@HONO
           password: rest-secret
@@ -684,16 +684,16 @@ objects:
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
-    name: hono-adapter-rest-vertx
+    name: hono-adapter-http-vertx
     labels:
       app: hono-adapter
-      deploymentconfig: hono-adapter-rest-vertx
+      deploymentconfig: hono-adapter-http-vertx
       hawkular-openshift-agent: jolokia-java
   spec:
     replicas: 1
     selector:
       app: hono-adapter
-      deploymentconfig: hono-adapter-rest-vertx
+      deploymentconfig: hono-adapter-http-vertx
     strategy:
       type: Rolling
       rollingParams:
@@ -704,19 +704,19 @@ objects:
         imageChangeParams:
           automatic: true
           containerNames:
-            - eclipsehono-hono-adapter-rest-vertx
+            - eclipsehono-hono-adapter-http-vertx
           from:
             kind: ImageStreamTag
-            name: hono-adapter-rest-vertx:latest
+            name: hono-adapter-http-vertx:latest
     template:
       metadata:
         labels:
           app: hono-adapter
-          deploymentconfig: hono-adapter-rest-vertx
+          deploymentconfig: hono-adapter-http-vertx
       spec:
         containers:
-        - name: eclipsehono-hono-adapter-rest-vertx
-          image: hono-adapter-rest-vertx
+        - name: eclipsehono-hono-adapter-http-vertx
+          image: hono-adapter-http-vertx
           imagePullPolicy: Always
           env:
           - name: SPRING_CONFIG_LOCATION
@@ -782,10 +782,10 @@ objects:
         volumes:
         - name: conf
           configMap:
-            name: hono-adapter-rest-vertx-config
+            name: hono-adapter-http-vertx-config
         - name: tls
           secret:
-            secretName: hono-adapter-rest-vertx-tls
+            secretName: hono-adapter-http-vertx-tls
         - name: hawkular-openshift-agent
           configMap:
             name: hawkular-openshift-agent-java
@@ -793,12 +793,12 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: hono-adapter-rest-vertx
+    name: hono-adapter-http-vertx
     labels:
       app: hono-adapter
-      deploymentconfig: hono-adapter-rest-vertx
+      deploymentconfig: hono-adapter-http-vertx
     annotations:
-      service.alpha.openshift.io/serving-cert-secret-name: hono-adapter-rest-vertx-tls
+      service.alpha.openshift.io/serving-cert-secret-name: hono-adapter-http-vertx-tls
   spec:
     ports:
       - name: http
@@ -811,27 +811,27 @@ objects:
         protocol: TCP
     selector:
       app: hono-adapter
-      deploymentconfig: hono-adapter-rest-vertx
+      deploymentconfig: hono-adapter-http-vertx
 
 - kind: Route
   apiVersion: v1
   metadata:
     labels:
       app: hono-adapter
-    name: hono-adapter-rest-vertx
+    name: hono-adapter-http-vertx
   spec:
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: hono-adapter-rest-vertx
+      name: hono-adapter-http-vertx
 
 - kind: Route
   apiVersion: v1
   metadata:
     labels:
       app: hono-adapter
-    name: hono-adapter-rest-vertx-sec
+    name: hono-adapter-http-vertx-sec
   spec:
     port:
       targetPort: 8443
@@ -839,7 +839,7 @@ objects:
       termination: passthrough
     to:
       kind: Service
-      name: hono-adapter-rest-vertx
+      name: hono-adapter-http-vertx
 
 # hono-service-device-registry
 
