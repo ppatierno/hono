@@ -649,24 +649,24 @@ objects:
           certPath: /etc/secrets/tls.crt
           keyFormat: PEM
         messaging:
-          name: 'Hono REST Adapter'
+          name: 'Hono HTTP Adapter'
           port: 5671
-          username: rest-adapter@HONO
-          password: rest-secret
+          username: http-adapter@HONO
+          password: http-secret
           trustStorePath: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
           trustStoreFormat: PEM
         registration:
           name: 'Hono HTTP Adapter'
           port: 5671
-          username: rest-adapter@HONO
-          password: rest-secret
+          username: http-adapter@HONO
+          password: http-secret
           trustStorePath: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
           trustStoreFormat: PEM
         credentials:
           name: 'Hono HTTP Adapter'
           port: 5671
-          username: rest-adapter@HONO
-          password: rest-secret
+          username: http-adapter@HONO
+          password: http-secret
           trustStorePath: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
           trustStoreFormat: PEM
         metric:
