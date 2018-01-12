@@ -46,8 +46,8 @@ in the directory [admin/](admin/). You only need to create one type.
 Adapt the files to your needs and execute them like this:
 
 ~~~sh
-oc create -f admin hono-pv-nfs.yml
-oc create -f admin grafana-pv-nfs.yml
+oc create -f admin/hono-pv-nfs.yml
+oc create -f admin/grafana-pv-nfs.yml
 …
 ~~~
 
