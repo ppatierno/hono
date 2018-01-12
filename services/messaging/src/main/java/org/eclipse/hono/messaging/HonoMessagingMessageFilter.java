@@ -56,13 +56,13 @@ public final class HonoMessagingMessageFilter extends BaseMessageFilter {
      public static boolean verify(final ResourceIdentifier linkTarget, final Message msg) {
 
          if (MessageHelper.getRegistrationAssertion(msg) == null) {
-             LOG.trace("message [{}] contains no {} application property", msg.getMessageId(), MessageHelper.APP_PROPERTY_REGISTRATION_ASSERTION);
+             LOG.debug("message [{}] contains no {} application property", msg.getMessageId(), MessageHelper.APP_PROPERTY_REGISTRATION_ASSERTION);
              return false;
          } else if (msg.getContentType() == null) {
-             LOG.trace("message [{}] has no content type", msg.getMessageId());
+             LOG.debug("message [{}] has no content type", msg.getMessageId());
              return false;
          } else if (msg.getBody() == null || !(msg.getBody() instanceof Data)) {
-             LOG.trace("message [{}] has no body of type AMQP Data", msg.getMessageId());
+             LOG.debug("message [{}] has no body of type AMQP Data", msg.getMessageId());
              return false;
          } else {
              return verifyStandardProperties(linkTarget, msg);
