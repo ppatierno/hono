@@ -38,12 +38,12 @@ Deploy EnMasse:
 
 You need to create a set of PVs. Grafana, InfluxDB and the Hono Device registry need a persistent storage.
 
-**Note:** Creating PVs is a cluster admin task.
+**Note:** Creating PVs is a cluster admin task. You will need cluster admin privileges for your user or local cluster access.
 
 This setup provides examples for two storage types: NFS and local disk. The examples are located
 in the directory [admin/](admin/). You only need to create one type.
 
-Adapt the files to your needs and execute them like this:
+You need to *adapt* the files to your needs (change NFS server, paths) and execute them like this:
 
 ~~~sh
 oc create -f admin/hono-pv-nfs.yml
