@@ -185,6 +185,39 @@ objects:
       referencePolicy:
         type: Source
 
+# Custom S2I base image
+
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: fabric8-s2i-java-custom
+
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: fabric8-s2i-java-custom-build
+  spec:
+    triggers: 
+      - type: ImageChange
+      - type: ConfigChange
+    source: 
+      type: Git
+      git:
+        uri: ${GIT_REPOSITORY}
+        ref: ${GIT_BRANCH}
+    strategy: 
+      type: Docker
+      dockerStrategy:
+        dockerfilePath: openshift/custom-base.Dockerfile
+        from:
+          kind: ImageStreamTag
+          name: fabric8-s2i-java:2.1
+    postCommit:
+    output: 
+      to:
+        kind: ImageStreamTag
+        name: fabric8-s2i-java-custom:2.1
+
 # InfluxDB
 
 - kind: ImageStream
