@@ -178,10 +178,10 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: fabric8/s2i-java:2.0
+        name: fabric8/s2i-java:2.1
       importPolicy:
         scheduled: true
-      name: "2.0"
+      name: "2.1"
       referencePolicy:
         type: Source
 
@@ -341,7 +341,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: fabric8-s2i-java:2.0
+          name: fabric8-s2i-java:2.1
         env:
         - name: MAVEN_ARGS_APPEND
           value: -B -pl org.eclipse.hono:hono-adapter-mqtt-vertx --also-make
@@ -615,7 +615,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: fabric8-s2i-java:2.0
+          name: fabric8-s2i-java:2.1
         env:
         - name: MAVEN_ARGS_APPEND
           value: -B -pl org.eclipse.hono:hono-adapter-http-vertx --also-make
@@ -870,7 +870,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: fabric8-s2i-java:2.0
+          name: fabric8-s2i-java:2.1
         env:
         - name: MAVEN_ARGS_APPEND
           value: -B -pl org.eclipse.hono:hono-service-device-registry --also-make
@@ -1152,7 +1152,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: fabric8-s2i-java:2.0
+          name: fabric8-s2i-java:2.1
         env:
         - name: MAVEN_ARGS_APPEND
           value: -B -pl org.eclipse.hono:hono-service-auth --also-make
@@ -1343,7 +1343,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: fabric8-s2i-java:2.0
+          name: fabric8-s2i-java:2.1
         env:
         - name: MAVEN_ARGS_APPEND
           value: -B -pl org.eclipse.hono:hono-service-messaging --also-make
