@@ -448,7 +448,7 @@ objects:
           - name: SPRING_CONFIG_LOCATION
             value: file:///etc/config/
           - name: SPRING_PROFILES_ACTIVE
-            value: dev
+            value: 
           - name: LOGGING_CONFIG
             value: classpath:logback-spring.xml
           - name: KUBERNETES_NAMESPACE
@@ -722,7 +722,7 @@ objects:
           - name: SPRING_CONFIG_LOCATION
             value: file:///etc/config/
           - name: SPRING_PROFILES_ACTIVE
-            value: dev
+            value: 
           - name: LOGGING_CONFIG
             value: classpath:logback-spring.xml
           - name: KUBERNETES_NAMESPACE
@@ -979,7 +979,7 @@ objects:
           - name: SPRING_CONFIG_LOCATION
             value: file:///etc/config/
           - name: SPRING_PROFILES_ACTIVE
-            value: dev
+            value: 
           - name: LOGGING_CONFIG
             value: classpath:logback-spring.xml
           - name: KUBERNETES_NAMESPACE
@@ -1228,7 +1228,7 @@ objects:
           - name: SPRING_CONFIG_LOCATION
             value: file:///etc/config/
           - name: SPRING_PROFILES_ACTIVE
-            value: authentication-impl,dev
+            value: authentication-impl
           - name: LOGGING_CONFIG
             value: classpath:logback-spring.xml
           - name: HONO_AUTH_SVC_SIGNING_SHARED_SECRET
@@ -1430,7 +1430,7 @@ objects:
           - name: SPRING_CONFIG_LOCATION
             value: file:///etc/config/
           - name: SPRING_PROFILES_ACTIVE
-            value: dev
+            value: 
           - name: LOGGING_CONFIG
             value: classpath:logback-spring.xml
           - name: HONO_AUTH_VALIDATION_SHARED_SECRET
