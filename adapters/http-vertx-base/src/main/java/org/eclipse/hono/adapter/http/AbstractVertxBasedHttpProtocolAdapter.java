@@ -488,12 +488,12 @@ public abstract class AbstractVertxBasedHttpProtocolAdapter<T extends HttpProtoc
             }).otherwise(t -> {
                 if (ClientErrorException.class.isInstance(t)) {
                     ClientErrorException e = (ClientErrorException) t;
-                    LOG.debug("cannot process message for device [tenantId: {}, deviceId: {}, endpoint: {}]: {} - {}",
-                            tenant, deviceId, endpointName, e.getErrorCode(), e.getMessage());
+                    LOG.debug("cannot process message for device [tenantId: {}, deviceId: {}, endpoint: {}]: {}",
+                            tenant, deviceId, endpointName, e.getErrorCode(), e);
                     ctx.fail(e.getErrorCode());
                 } else {
-                    LOG.debug("cannot process message for device [tenantId: {}, deviceId: {}, endpoint: {}]: {}",
-                            tenant, deviceId, endpointName, t.getMessage());
+                    LOG.debug("cannot process message for device [tenantId: {}, deviceId: {}, endpoint: {}]",
+                            tenant, deviceId, endpointName, t);
                     metrics.incrementUndeliverableHttpMessages(endpointName, tenant);
                     HttpUtils.serviceUnavailable(ctx, 2);
                 }
