@@ -22,7 +22,7 @@ public class SignatureSupportingConfigProperties {
 
     private String sharedSecret;
     private String keyPath;
-    private long tokenExpirationSeconds = 600L;
+    private long tokenExpirationSeconds = 120L; // FIXME: CRUDE HACK
     private String certificatePath;
 
     /**
