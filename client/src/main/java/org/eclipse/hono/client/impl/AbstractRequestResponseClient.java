@@ -232,7 +232,7 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
         final Handler<AsyncResult<R>> handler = replyMap.remove(message.getCorrelationId());
         if (handler != null) {
             R response = getRequestResponseResult(message);
-            LOG.debug("received response [reply-to: {}, subject: {}, correlation ID: {}, status: {}]",
+            LOG.trace("received response [reply-to: {}, subject: {}, correlation ID: {}, status: {}]",
                     replyToAddress, message.getSubject(), message.getCorrelationId(), response.getStatus());
             handler.handle(Future.succeededFuture(response));
             ProtonHelper.accepted(delivery, true);
@@ -405,10 +405,10 @@ public abstract class AbstractRequestResponseClient<R extends RequestResponseRes
                 if (LOG.isDebugEnabled()) {
                     final String deviceId = MessageHelper.getDeviceId(request);
                     if (deviceId == null) {
-                        LOG.debug("sent request [target address: {}, subject: {}, correlation ID: {}] to service",
+                        LOG.trace("sent request [target address: {}, subject: {}, correlation ID: {}] to service",
                                 targetAddress, request.getSubject(), correlationId);
                     } else {
-                        LOG.debug("sent request [target address: {}, subject: {}, correlation ID: {}, device ID: {}] to service",
+                        LOG.trace("sent request [target address: {}, subject: {}, correlation ID: {}, device ID: {}] to service",
                                 targetAddress, request.getSubject(), correlationId, deviceId);
                     }
                 }

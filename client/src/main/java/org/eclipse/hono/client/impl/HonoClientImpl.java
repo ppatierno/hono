@@ -288,7 +288,7 @@ public final class HonoClientImpl implements HonoClient {
 
         final MessageSender sender = activeSenders.get(key);
         if (sender != null && sender.isOpen()) {
-            LOG.debug("reusing existing message sender [target: {}, credit: {}]", key, sender.getCredit());
+            LOG.trace("reusing existing message sender [target: {}, credit: {}]", key, sender.getCredit());
             resultHandler.handle(Future.succeededFuture(sender));
         } else if (!isConnected()) {
             resultHandler.handle(Future.failedFuture(new ServerErrorException(
@@ -447,7 +447,7 @@ public final class HonoClientImpl implements HonoClient {
 
         final RequestResponseClient client = activeRequestResponseClients.get(key);
         if (client != null && client.isOpen()) {
-            LOG.debug("reusing existing client [target: {}]", key);
+            LOG.trace("reusing existing client [target: {}]", key);
             resultHandler.handle(Future.succeededFuture(client));
         } else if (!isConnected()) {
             resultHandler.handle(Future.failedFuture(new ServerErrorException(
