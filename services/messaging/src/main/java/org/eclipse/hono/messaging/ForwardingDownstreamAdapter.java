@@ -132,6 +132,8 @@ public abstract class ForwardingDownstreamAdapter implements DownstreamAdapter {
     @Override
     public final void start(final Future<Void> startFuture) {
 
+        logger.trace("Starting up...");
+
         if (running) {
             startFuture.complete();
         } else if (downstreamConnectionFactory == null) {
