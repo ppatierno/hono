@@ -229,12 +229,16 @@ public final class HonoClientImpl implements HonoClient {
         if (connection != null && !connection.isDisconnected()) {
             connection.disconnect();
         }
+
+        final ProtonConnection failedConnection = this.connection;
+        this.connection = null;
+
         activeSenders.clear();
         activeRequestResponseClients.clear();
         failAllCreationRequests();
 
         if (connectionLossHandler != null) {
-            connectionLossHandler.handle(connection);
+            connectionLossHandler.handle(failedConnection);
         } else {
             reconnect(attempt -> {}, failedCon -> onRemoteDisconnect(failedCon, null));
         }
