@@ -7,9 +7,9 @@ Things to do:
  - [X] Separate EnMasse from Hono project/namespace
  - [X] Separate Grafana from Hono project/namespace
  - [ ] Enable Grafana "Guest"
- - [ ] Switch to Grafana 4.7
- - [ ] Enable datasource provisioning (requires Grafana 4.7)
- - [ ] Enable dashboard provisioning (requires Grafana 4.7)
+ - [ ] Switch to Grafana 5.0 (when it is released)
+ - [ ] Enable datasource provisioning (requires Grafana 5.0)
+ - [ ] Enable dashboard provisioning (requires Grafana 5.0)
 
 ## Deploy EnMasse
 
@@ -23,15 +23,15 @@ oc new-project enmasse --display-name='EnMasse Instance'
 Download and unpack EnMasse:
 
 ~~~sh
-wget https://github.com/EnMasseProject/enmasse/releases/download/0.13.2/enmasse-0.13.2.tgz
-tar xzf enmasse-0.13.2.tgz
-cd enmasse-0.13.2
+wget https://github.com/EnMasseProject/enmasse/releases/download/0.17.0/enmasse-0.17.0.tgz
+tar xzf enmasse-0.17.0.tgz
+cd enmasse-0.17.0
 ~~~
 
 Deploy EnMasse:
 
 ~~~sh
-./deploy-openshift.sh -n enmasse -m https://dchp153.coe:8443 -u developer
+./deploy-openshift.sh -n enmasse -m https://my-cluster:8443 -u developer
 ~~~
 
 ## Create PVs
@@ -51,7 +51,8 @@ oc create -f admin/grafana-pv-nfs.yml
 …
 ~~~
 
-**Note:** Local disk PVs only work in a single node OpenShift setup
+**Note:** When using minishift you can ignore this step as minishift will automatically allocate PVs for you.
+**Note:** Local disk PVs only work in a single node OpenShift setup.
 
 Also see:
 
@@ -61,7 +62,7 @@ Also see:
 
 ~~~sh
 PROJECT=enmasse
-curl -X PUT -T "addresses.json" -H "content-type: application/json" http://$(oc -n "$PROJECT" get route restapi -o jsonpath='{.spec.host}')/v1/addresses/default
+curl -X PUT --insecure -T "addresses.json" -H "content-type: application/json" https://$(oc -n "$PROJECT" get route restapi -o jsonpath='{.spec.host}')/apis/enmasse.io/v1/addresses/default
 ~~~
 
 ## Deploy Hono template
@@ -92,14 +93,14 @@ You can set template parameters like that:
 oc process -f hono.yml \
    -p "ENMASSE_NAMESPACE=enmasse" \
    -p "GIT_REPOSITORY=https://github.com/ctron/hono" \
-   -p "GIT_BRANCH=feature/support_s2i"| oc create -f -
+   -p "GIT_BRANCH=feature/support_s2i_05x"| oc create -f -
 ~~~
 
 **Note:** Currently you will need to set the following parameters:
 
 * `ENMASSE_NAMESPACE=enmasse`
 * `GIT_REPOSITORY=https://github.com/ctron/hono`
-* `GIT_BRANCH=feature/support_s2i`
+* `GIT_BRANCH=feature/support_s2i_05x`
 
 See also:
 * [OpenShift: Templates](https://docs.openshift.org/latest/dev_guide/templates.html) 
@@ -112,7 +113,7 @@ Create a new project for Grafana:
 oc new-project grafana --display-name='Grafana Dashboard'
 ~~~
 
-The Hono template is located at: [grafana.yml](grafana.yml). It needs to be processes and executed.
+The Grafana template is located at: [grafana.yml](grafana.yml). It needs to be processes and executed.
 Please see [Deploy Hono template](#deploy-hono-template) for more information about deploying a
 template.
 

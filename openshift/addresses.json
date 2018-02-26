@@ -3,20 +3,18 @@
     "kind": "AddressList",
     "items": [
       {
-        "metadata": {
-          "name": "event/DEFAULT_TENANT"
-        },
         "spec": {
-          "type": "topic"
+          "address": "event/DEFAULT_TENANT",
+          "type": "queue",
+          "plan": "pooled-queue"
         }
       },
       {
-        "metadata": {
-          "name": "telemetry/DEFAULT_TENANT"
-        },
         "spec": {
-          "type": "anycast"
+          "address": "telemetry/DEFAULT_TENANT",
+          "type": "anycast",
+          "plan": "standard-anycast"
         }
       }
     ]
-  }
+}
