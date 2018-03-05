@@ -196,6 +196,9 @@ public abstract class AbstractVertxBasedHttpProtocolAdapter<T extends HttpProtoc
     protected Router createRouter() {
 
         final Router router = Router.router(vertx);
+        router.exceptionHandler(ex -> {
+            LOG.error("Handle router execption", ex);
+        });
         LOG.info("limiting size of inbound request body to {} bytes", getConfig().getMaxPayloadSize());
         router.route().handler(BodyHandler.create(DEFAULT_UPLOADS_DIRECTORY).setBodyLimit(getConfig().getMaxPayloadSize()));
 
@@ -269,6 +272,9 @@ public abstract class AbstractVertxBasedHttpProtocolAdapter<T extends HttpProtoc
             if (server == null) {
                 server = vertx.createHttpServer(getHttpServerOptions());
             }
+            server.exceptionHandler(ex -> {
+                LOG.error("Exception in secure server", ex);
+            });
             server.requestHandler(router::accept).listen(done -> {
                 if (done.succeeded()) {
                     LOG.info("secure http server listening on {}:{}", bindAddress, server.actualPort());
@@ -292,6 +298,9 @@ public abstract class AbstractVertxBasedHttpProtocolAdapter<T extends HttpProtoc
             if (insecureServer == null) {
                 insecureServer = vertx.createHttpServer(getInsecureHttpServerOptions());
             }
+            insecureServer.exceptionHandler(ex -> {
+                LOG.error("Exception in in-secure server", ex);
+            });
             insecureServer.requestHandler(router::accept).listen(done -> {
                 if (done.succeeded()) {
                     LOG.info("insecure http server listening on {}:{}", bindAddress, insecureServer.actualPort());
