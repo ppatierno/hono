@@ -13,6 +13,8 @@ Things to do:
 
 ## Deploy EnMasse
 
+> If you are going to deploy Eclipse Hono and EnMasse using Minishift, you would need at least 8 GB of RAM for running the builds and deploying all the needed containers; start Minishift with the following command `minishift start --memory 4GB`
+
 Login in to OpenShift and create a new EnMasse project:
 
 ~~~sh
